@@ -10,7 +10,7 @@ def open_file(name):
     return file
 
 # takes open file and up_to int that specifies how many lines we want to read. 
-# returns list of tuples sorted in descending frequency
+# returns list of original lines and then tuples sorted in descending frequency
 def format_and_dictionary(file, up_to):
     dictionary = defaultdict(int)
     lines = file.readlines()
@@ -25,6 +25,7 @@ def format_and_dictionary(file, up_to):
             else:
                 temp += split[i]
         temp = temp[:len(temp) - 2] + ' .'
+        lines[idx] = temp
 
         # adding to dict
         splot = temp.split(" ")
@@ -33,11 +34,10 @@ def format_and_dictionary(file, up_to):
         ret = []
         for k, v in sorted(dictionary.items(), key = lambda x: x[1], reverse = True):
             ret.append((k, v))
-    return ret
+    return (lines, ret)
 
 file = open_file("wikisent2.txt")
-res = format_and_dictionary(file, 100)
-print(res[0])
+lines, frequencies = format_and_dictionary(file, 100)
 
 
 
