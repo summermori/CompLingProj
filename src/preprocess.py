@@ -10,7 +10,8 @@ def open_file(name):
     return file
 
 # takes open file and up_to int that specifies how many lines we want to read. 
-# returns list of original lines and then tuples sorted in descending frequency
+# returns list of strings, each string is an original line(formatted so that all are lowercase and punctuation is spaced) and 
+# then tuples("word", frequency) sorted in descending order
 def format_and_rank(file, up_to):
     dictionary = defaultdict(int)
     lines = file.readlines()
