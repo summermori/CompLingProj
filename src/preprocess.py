@@ -11,7 +11,7 @@ def open_file(name):
 
 # takes open file and up_to int that specifies how many lines we want to read. 
 # returns list of original lines and then tuples sorted in descending frequency
-def format_and_dictionary(file, up_to):
+def format_and_rank(file, up_to):
     dictionary = defaultdict(int)
     lines = file.readlines()
     lines = lines[:up_to]
@@ -37,7 +37,7 @@ def format_and_dictionary(file, up_to):
     return (lines, ret)
 
 file = open_file("wikisent2.txt")
-lines, frequencies = format_and_dictionary(file, 100)
+lines, frequencies = format_and_rank(file, 100000)
 
 
 
