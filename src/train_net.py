@@ -58,9 +58,9 @@ def run_training(train_data,id2word):
 	for epoch in range(num_training_epochs):
 		# Move through data one word (ID) at a time, extracting a window of three
 		# context words, and a target fourth word for the model to predict
-		for i in range(len(train_data) - 3):
-			input_context = torch.LongTensor(train_data[i:i+3])
-			target_word = torch.LongTensor([train_data[i+3]])
+		for i in range(2:len(train_data) - 1):
+			input_context = torch.LongTensor(train_data[:i-1])
+			target_word = torch.LongTensor([train_data[i]])
 
 			# Run model on input, get loss, update weights
 			nnlm_optimizer.zero_grad()

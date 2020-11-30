@@ -11,9 +11,9 @@ def convert2ids(data, word2id):
 	ids = []
 
 	for word in data:
-		id = word2id[word]
+		id = word2id.get(word)
 		if id == None:
-			ids.append("unk")
+			ids.append(word2id["unk"])
 		else:
 			ids.append(id)
 
