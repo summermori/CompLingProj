@@ -20,8 +20,7 @@ class NN_LM(nn.Module):
 		hid = torch.tanh(self.H_lyr(x))
 		out = F.log_softmax(self.U_lyr(hid),dim=1)
 		return out
-
-
+	
 def process_training_data(corpus_text):
     """Tokenizes a text file."""
     # Create the model's vocabulary and map to unique indices
@@ -35,17 +34,16 @@ def process_training_data(corpus_text):
 	            word2id[word] = len(id2word) - 1
 
     # Convert string of text into string of IDs in a tensor for input to model
-	input_as_ids = []
-	for sentence in corpus_text:
-		sentence_as_ids = []
-		for word in sentence.split():
-			sentence_as_ids.append(word2id[word])
-		inputs_as_ids.append(sentence_as_ids)
+    input_as_ids = []
+    for sentence in corpus_text:
+	    sentence_as_ids = []
+	    for word in sentence.split():
+	        sentence_as_ids.append(word2id[word])
+	    inputs_as_ids.append(sentence_as_ids)
     # final_ids = torch.LongTensor(input_as_ids)
 
-	return input_as_ids,word2id,id2word
+    return input_as_ids,word2id,id2word
 
-# This function runs the training of the model.
 def run_training(train_data,id2word):
 	num_training_epochs = 50
 
@@ -62,7 +60,7 @@ def run_training(train_data,id2word):
 		# Move through data one word (ID) at a time, extracting a window of three
 		# context words, and a target fourth word for the model to predict
 		for sentence in train_data:
-			for i in range(2:len(sentence) - 1):
+			for i in range(2, len(sentence) - 1):
 				input_context = torch.LongTensor(sentence[:i-1])
 				target_word = torch.LongTensor([sentence[i]])
 
@@ -75,29 +73,4 @@ def run_training(train_data,id2word):
 
 	return nnlm_model
 
-# need to pull training corpus
-pickle = open("CompLingProj/data/wiki_processed_data.pkl", 'rb')
 
-train_corpus = """
-okay, he thought ; i'm off to work . he reached for the doorknob that opened the way out into the unlit hall ,
-then shrank back as he glimpsed the vacuity of the rest of the building . it lay in wait for him, out here ,
-the force which he had felt busily penetrating his specific apartment . god , he thought , and reshut the door .
-he was not ready for the trip up those clanging stairs to the empty roof where he had no animal . the echo of
-himself ascending : the echo of nothing . time to grasp the handles , he said to himself , and crossed the living
-room to the black empathy box .
-"""
-
-# train_data,word2id,id2word = process_training_data(train_corpus)
-# model = run_training(train_data,id2word)
-
-# torch.save(model.state_dict(), "trained_model_wiki.pt")
-
-# file = open("word2id.pkl", "wb")
-# pickle.dump(word2id, file)
-# file.close()
-
-# file = open("id2word.pkl", "wb")
-# pickle.dump(id2word, file)
-# file.close()
-
-# print("Vocab size: ", len(id2word))
