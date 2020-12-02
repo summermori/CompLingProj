@@ -4,6 +4,8 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import pickle
+import os
+import random
 
 class NN_LM(nn.Module):
 
@@ -39,7 +41,7 @@ def process_training_data(corpus_text):
 	    sentence_as_ids = []
 	    for word in sentence.split():
 	        sentence_as_ids.append(word2id[word])
-	    inputs_as_ids.append(sentence_as_ids)
+	    input_as_ids.append(sentence_as_ids)
     # final_ids = torch.LongTensor(input_as_ids)
 
     return input_as_ids,word2id,id2word
@@ -72,5 +74,18 @@ def run_training(train_data,id2word):
 				nnlm_optimizer.step()
 
 	return nnlm_model
+
+# loading pickle and randomly selecting 75% of sentences for pickle
+dir_path = os.path.dirname(os.path.realpath(__file__))
+wiki_file = open(dir_path[:-3] + "datasets/wiki_processed_data.pkl", "rb")
+wiki_data = pickle.load(wiki_file)
+wiki_file.close()
+wiki_train_set = random.sample(wiki_data, round(len(wiki_data) * 0.75))
+
+train_data, word2id, id2word = process_training_data(wiki_train_set)
+model = run_training(train_data, id2word)
+torch.save(model.state_dict(), "wiki_trained_model.pt")
+
+
 
 
