@@ -27,16 +27,18 @@ def process_training_data(corpus_text):
     # Create the model's vocabulary and map to unique indices
     word2id = {}
     id2word = []
-
-    for word in corpus_text.split():
-        if word not in word2id:
-            id2word.append(word)
-            word2id[word] = len(id2word) - 1
+	
+	for sentence in corpus_text:
+		for word in sentence.split():
+			if word not in word2id:
+				id2word.append(word)
+				word2id[word] = len(id2word) - 1
 
     # Convert string of text into string of IDs in a tensor for input to model
     input_as_ids = []
-    for word in corpus_text.split():
-        input_as_ids.append(word2id[word])
+    for sentence in corpus_text:
+		for word in sentence.split():
+			input_as_ids.append(word2id[word])
     # final_ids = torch.LongTensor(input_as_ids)
 
 
@@ -58,16 +60,17 @@ def run_training(train_data,id2word):
 	for epoch in range(num_training_epochs):
 		# Move through data one word (ID) at a time, extracting a window of three
 		# context words, and a target fourth word for the model to predict
-		for i in range(len(train_data) - 3):
-			input_context = torch.LongTensor(train_data[i:i+3])
-			target_word = torch.LongTensor([train_data[i+3]])
+		for sentence in train_data:
+			for i in range(len(sentence) - 3):
+				input_context = torch.LongTensor(sentence[i:i+3])
+				target_word = torch.LongTensor([sentence[i+3]])
 
-			# Run model on input, get loss, update weights
-			nnlm_optimizer.zero_grad()
-			output = nnlm_model(input_context)
-			loss = criterion(output, target_word)
-			loss.backward()
-			nnlm_optimizer.step()
+				# Run model on input, get loss, update weights
+				nnlm_optimizer.zero_grad()
+				output = nnlm_model(input_context)
+				loss = criterion(output, target_word)
+				loss.backward()
+				nnlm_optimizer.step()
 
 	return nnlm_model
 

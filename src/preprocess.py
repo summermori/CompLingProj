@@ -65,8 +65,6 @@ pickle.dump(frequencies, out_2)
 out_1.close()
 out_2.close()
 
-
-
 # test = "12 peaches , 3-6 29 1 in my mouth ."
 # split = test.split(" ")
 # elim_nums = ""
