@@ -35,15 +35,15 @@ def process_training_data(corpus_text):
 	            word2id[word] = len(id2word) - 1
 
     # Convert string of text into string of IDs in a tensor for input to model
-    input_as_ids = []
-    for sentence in corpus_text:
-    	sentence_as_ids = []
-	    for word in sentence.split():
-	        sentence_as_ids.append(word2id[word])
-	    input_as_ids.append(sentence_as_ids)
+	input_as_ids = []
+	for sentence in corpus_text:
+		sentence_as_ids = []
+		for word in sentence.split():
+			sentence_as_ids.append(word2id[word])
+		inputs_as_ids.append(sentence_as_ids)
     # final_ids = torch.LongTensor(input_as_ids)
 
-    return input_as_ids,word2id,id2word
+	return input_as_ids,word2id,id2word
 
 # This function runs the training of the model.
 def run_training(train_data,id2word):
@@ -76,6 +76,8 @@ def run_training(train_data,id2word):
 	return nnlm_model
 
 # need to pull training corpus
+pickle = open("CompLingProj/data/wiki_processed_data.pkl", 'rb')
+
 train_corpus = """
 okay, he thought ; i'm off to work . he reached for the doorknob that opened the way out into the unlit hall ,
 then shrank back as he glimpsed the vacuity of the rest of the building . it lay in wait for him, out here ,
@@ -85,17 +87,17 @@ himself ascending : the echo of nothing . time to grasp the handles , he said to
 room to the black empathy box .
 """
 
-train_data,word2id,id2word = process_training_data(train_corpus)
-model = run_training(train_data,id2word)
+# train_data,word2id,id2word = process_training_data(train_corpus)
+# model = run_training(train_data,id2word)
 
-torch.save(model.state_dict(), "trained_model_wiki.pt")
+# torch.save(model.state_dict(), "trained_model_wiki.pt")
 
-file = open("word2id.pkl", "wb")
-pickle.dump(word2id, file)
-file.close()
+# file = open("word2id.pkl", "wb")
+# pickle.dump(word2id, file)
+# file.close()
 
-file = open("id2word.pkl", "wb")
-pickle.dump(id2word, file)
-file.close()
+# file = open("id2word.pkl", "wb")
+# pickle.dump(id2word, file)
+# file.close()
 
-print("Vocab size: ", len(id2word))
+# print("Vocab size: ", len(id2word))
