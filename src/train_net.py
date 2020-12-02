@@ -27,20 +27,21 @@ def process_training_data(corpus_text):
     # Create the model's vocabulary and map to unique indices
     word2id = {}
     id2word = []
-	
-	for sentence in corpus_text:
-		for word in sentence.split():
-			if word not in word2id:
-				id2word.append(word)
-				word2id[word] = len(id2word) - 1
+
+    for sentence in corpus_text:
+	    for word in sentence.split():
+	        if word not in word2id:
+	            id2word.append(word)
+	            word2id[word] = len(id2word) - 1
 
     # Convert string of text into string of IDs in a tensor for input to model
     input_as_ids = []
     for sentence in corpus_text:
-		for word in sentence.split():
-			input_as_ids.append(word2id[word])
+    	sentence_as_ids = []
+	    for word in sentence.split():
+	        sentence_as_ids.append(word2id[word])
+	    input_as_ids.append(sentence_as_ids)
     # final_ids = torch.LongTensor(input_as_ids)
-
 
     return input_as_ids,word2id,id2word
 
@@ -61,9 +62,9 @@ def run_training(train_data,id2word):
 		# Move through data one word (ID) at a time, extracting a window of three
 		# context words, and a target fourth word for the model to predict
 		for sentence in train_data:
-			for i in range(len(sentence) - 3):
-				input_context = torch.LongTensor(sentence[i:i+3])
-				target_word = torch.LongTensor([sentence[i+3]])
+			for i in range(2:len(sentence) - 1):
+				input_context = torch.LongTensor(sentence[:i-1])
+				target_word = torch.LongTensor([sentence[i]])
 
 				# Run model on input, get loss, update weights
 				nnlm_optimizer.zero_grad()
@@ -87,7 +88,7 @@ room to the black empathy box .
 train_data,word2id,id2word = process_training_data(train_corpus)
 model = run_training(train_data,id2word)
 
-torch.save(model.state_dict(), "trained_model.pt")
+torch.save(model.state_dict(), "trained_model_wiki.pt")
 
 file = open("word2id.pkl", "wb")
 pickle.dump(word2id, file)
