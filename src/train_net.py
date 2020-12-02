@@ -28,17 +28,20 @@ def process_training_data(corpus_text):
     word2id = {}
     id2word = []
 
-    for word in corpus_text.split():
-        if word not in word2id:
-            id2word.append(word)
-            word2id[word] = len(id2word) - 1
+    for sentence in corpus_text:
+	    for word in sentence.split():
+	        if word not in word2id:
+	            id2word.append(word)
+	            word2id[word] = len(id2word) - 1
 
     # Convert string of text into string of IDs in a tensor for input to model
     input_as_ids = []
-    for word in corpus_text.split():
-        input_as_ids.append(word2id[word])
+    for sentence in corpus_text:
+    	sentence_as_ids = []
+	    for word in sentence.split():
+	        sentence_as_ids.append(word2id[word])
+	    input_as_ids.append(sentence_as_ids)
     # final_ids = torch.LongTensor(input_as_ids)
-
 
     return input_as_ids,word2id,id2word
 
@@ -58,16 +61,17 @@ def run_training(train_data,id2word):
 	for epoch in range(num_training_epochs):
 		# Move through data one word (ID) at a time, extracting a window of three
 		# context words, and a target fourth word for the model to predict
-		for i in range(2:len(train_data) - 1):
-			input_context = torch.LongTensor(train_data[:i-1])
-			target_word = torch.LongTensor([train_data[i]])
+		for sentence in train_data:
+			for i in range(2:len(sentence) - 1):
+				input_context = torch.LongTensor(sentence[:i-1])
+				target_word = torch.LongTensor([sentence[i]])
 
-			# Run model on input, get loss, update weights
-			nnlm_optimizer.zero_grad()
-			output = nnlm_model(input_context)
-			loss = criterion(output, target_word)
-			loss.backward()
-			nnlm_optimizer.step()
+				# Run model on input, get loss, update weights
+				nnlm_optimizer.zero_grad()
+				output = nnlm_model(input_context)
+				loss = criterion(output, target_word)
+				loss.backward()
+				nnlm_optimizer.step()
 
 	return nnlm_model
 
@@ -84,7 +88,7 @@ room to the black empathy box .
 train_data,word2id,id2word = process_training_data(train_corpus)
 model = run_training(train_data,id2word)
 
-torch.save(model.state_dict(), "trained_model.pt")
+torch.save(model.state_dict(), "trained_model_wiki.pt")
 
 file = open("word2id.pkl", "wb")
 pickle.dump(word2id, file)
